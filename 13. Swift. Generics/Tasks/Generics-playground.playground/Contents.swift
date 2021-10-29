@@ -106,12 +106,27 @@ class Seaship {
 //: 1. Если тип `T` представлен числовым типом, в интерфейсе доступно свойство `count`, возвращающее количество элементов
 //: 2. Если тип `T` представлен строковым типом, в интерфейсе доступен метод `prefix`, возвращающий наибольший общий префикс у всех элементов
 
-extension OrderedQueue {
-    where T == Int {
-    var count: Int = 0
+extension OrderedQueue where T == Int {
+    var k: Int { items.count }
+}
+
+extension OrderedQueue where T == String {
+    func prefix() -> String {
+        let k = self.items.map{ $0.count }.min() ?? 0
+        for index in stride(from: k, to: 0, by: -1) {
+            var tmp: Set<String> = []
+            for element in self.items {
+                tmp.insert(String(element.prefix(index)))
+            }
+            if tmp.count == 1 {
+                return tmp.first!
+            }
+        }
+        return ""
     }
 }
 
-extension OrderedQueue {
-    
-}
+var a = OrderedQueue(items: ["123", "123", "1234"])
+a.prefix()
+var b = OrderedQueue(items: [1, 2, 3, 4, 5])
+b.k
